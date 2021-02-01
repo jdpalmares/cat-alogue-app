@@ -4,12 +4,13 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import axios from 'axios';
 
-import '../css/Cat.scss';
+import '../css/CatDetails.scss';
 
 /**
- * Cat component
+ * CatDetails component
+ * (Single Cat Page requirement)
  */
-class Cat extends Component {
+class CatDetails extends Component {
 
   constructor(...args) {
     super(...args);
@@ -19,6 +20,9 @@ class Cat extends Component {
     }
   }
 
+  /**
+   * Render page components
+   */
   render() {
     const { cat, ready } = this.state;
     if (ready && !cat.id) {
@@ -28,7 +32,7 @@ class Cat extends Component {
     }
     if (!ready) {
       return (
-        <div className="Cat">
+        <div className="CatDetails">
           <Container>
             <h5>Loading...</h5>
           </Container>
@@ -37,7 +41,7 @@ class Cat extends Component {
     }
     const breed = cat.breeds[0];
     return (
-      <div className="Cat">
+      <div className="CatDetails">
         <Container>
           <Card>
             <Card.Header>
@@ -56,14 +60,24 @@ class Cat extends Component {
     );
   }
 
+  /**
+   * Process after a component (CatDetails) is mounted
+   */
   componentDidMount() {
     axios('//api.thecatapi.com/v1/images/' + this.props.match.params.id).then(({ data }) => {
       this.setState({
         cat: data,
         ready: true
       });
+    })
+    .catch(err => {
+      //Alert prompt for API error handling to load cat imge
+      let errMsg = "Apologies but we could not load this cat image for you at this time! Miau!";
+      errMsg += "\r\nPlease reload the page or try again later";
+      alert(errMsg);
+      console.log(err);
     });
   }
 }
 
-export default withRouter(Cat);
+export default withRouter(CatDetails);
